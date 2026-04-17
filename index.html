@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chomsky Hierarchy Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="courtroom_style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-brand">
+      <div class="brand-box">CH</div>
+      <span class="brand-name">Chomsky Hierarchy</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="diagram">◈ DIAGRAM</button>
+      <button class="nav-tab" data-tab="simulate">⟳ SIMULATE</button>
+      <button class="nav-tab" data-tab="playground">⚡ PLAYGROUND</button>
+      <button class="nav-tab" data-tab="compare">⇄ COMPARE</button>
+      <button class="nav-tab" data-tab="courtroom">⚖️ COURTROOM</button>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       TAB: DIAGRAM
+  ══════════════════════════════════════ -->
+  <section id="tab-diagram" class="tab active">
+
+    <div class="page-header">
+      <div class="page-tag">THEORY OF COMPUTATION</div>
+      <h1>Chomsky <em>Hierarchy</em></h1>
+      <p class="page-sub">Click any layer of the Venn diagram to explore that language class</p>
+    </div>
+
+    <div id="diagram-app">
+
+      <!-- Info Panel (left slide-in) -->
+      <div id="info-panel">
+        <button class="panel-close" onclick="closePanel()">✕ close</button>
+        <div id="panel-badge"></div>
+        <h2 id="panel-title"></h2>
+        <div id="panel-grammar"></div>
+        <p id="panel-def"></p>
+
+        <div class="panel-section">
+          <div class="section-label">LANGUAGE EXAMPLES</div>
+          <ul id="panel-examples"></ul>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">AUTOMATON</div>
+          <p id="panel-automaton"></p>
+          <div id="panel-diagram"></div>
+        </div>
+      </div>
+
+      <!-- Venn Diagram -->
+      <div id="venn-area">
+        <div id="venn-wrap">
+          <div id="venn">
+            <div class="v-ring" id="vr-re"  data-type="re">
+              <span class="v-label">Type 0<br><small>Recursively Enumerable</small></span>
+            </div>
+            <div class="v-ring" id="vr-cs"  data-type="cs">
+              <span class="v-label">Type 1<br><small>Context-Sensitive</small></span>
+            </div>
+            <div class="v-ring" id="vr-cf"  data-type="cf">
+              <span class="v-label">Type 2<br><small>Context-Free</small></span>
+            </div>
+            <div class="v-ring" id="vr-reg" data-type="reg">
+              <span class="v-label">Type 3<br><small>Regular</small></span>
+            </div>
+          </div>
+          <div class="venn-hint">← click any ring to explore →</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       TAB: SIMULATE
+  ══════════════════════════════════════ -->
+  <section id="tab-simulate" class="tab">
+
+    <div class="page-header">
+      <div class="page-tag">LANGUAGE CLASSIFIER</div>
+      <h1>Simulate <em>&amp; Classify</em></h1>
+      <p class="page-sub">Build a language pattern using the keyboard below, then classify it</p>
+    </div>
+
+    <div id="sim-container">
+
+      <div id="sim-input-card">
+        <!-- Display -->
+        <div id="sim-display-wrap">
+          <div id="sim-display"><span class="cursor">|</span></div>
+          <button id="sim-clear-btn" title="clear">⌫</button>
+        </div>
+
+        <!-- Preset dropdown -->
+        <div class="sim-row">
+          <label class="field-label">Or pick a preset:</label>
+          <select id="sim-preset">
+            <option value="">— select —</option>
+            <optgroup label="Type 3 — Regular">
+              <option value="a*">a*</option>
+              <option value="a*b*">a*b*</option>
+              <option value="(ab)*">(ab)*</option>
+              <option value="strings ending in ab">strings ending in ab</option>
+            </optgroup>
+            <optgroup label="Type 2 — Context-Free">
+              <option value="aⁿbⁿ">aⁿbⁿ</option>
+              <option value="palindrome">palindrome over {a,b}</option>
+              <option value="balanced parentheses">balanced parentheses</option>
+            </optgroup>
+            <optgroup label="Type 1 — Context-Sensitive">
+              <option value="aⁿbⁿcⁿ">aⁿbⁿcⁿ</option>
+              <option value="aⁿbⁿcⁿdⁿ">aⁿbⁿcⁿdⁿ</option>
+              <option value="aⁿbⁿcⁿdⁿeⁿ">aⁿbⁿcⁿdⁿeⁿ</option>
+              <option value="ww">ww (copy language)</option>
+            </optgroup>
+            <optgroup label="Type 0 — Recursively Enumerable">
+              <option value="halting problem">halting problem</option>
+              <option value="post correspondence">post correspondence problem</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Symbol Keyboard -->
+        <div class="sim-row">
+          <label class="field-label">Symbol keyboard:</label>
+          <div id="sim-keyboard">
+            <div class="kb-group">
+              <span class="kb-label">SYMBOLS</span>
+              <div class="kb-keys">
+                <button class="kb-key" data-val="a">a</button>
+                <button class="kb-key" data-val="b">b</button>
+                <button class="kb-key" data-val="c">c</button>
+                <button class="kb-key" data-val="d">d</button>
+                <button class="kb-key" data-val="i">i</button>
+                <button class="kb-key" data-val="j">j</button>
+                <button class="kb-key" data-val="0">0</button>
+                <button class="kb-key" data-val="1">1</button>
+                <button class="kb-key" data-val="w">w</button>
+              </div>
+            </div>
+            <div class="kb-group">
+              <span class="kb-label">QUANTIFIERS</span>
+              <div class="kb-keys">
+                <button class="kb-key" data-val="*">*</button>
+                <button class="kb-key" data-val="⁺">⁺</button>
+                <button class="kb-key" data-val="+">+</button>
+                <button class="kb-key" data-val="ⁿ">ⁿ</button>
+                <button class="kb-key" data-val="ᵐ">ᵐ</button>
+                <button class="kb-key" data-val="ⁱ">ⁱ</button>
+                <button class="kb-key" data-val="ʲ">ʲ</button>
+                <button class="kb-key" data-val="(">(</button>
+                <button class="kb-key" data-val=")">)</button>
+              </div>
+            </div>
+            <div class="kb-group">
+              <span class="kb-label">LANGUAGE OPS</span>
+              <div class="kb-keys">
+                <button class="kb-key kb-wide" data-val="aⁿbⁿ">aⁿbⁿ</button>
+                <button class="kb-key kb-wide" data-val="aⁿbⁿcⁿ">aⁿbⁿcⁿ</button>
+                <button class="kb-key kb-wide" data-val="aⁿbⁿcⁿdⁿ">aⁿbⁿcⁿdⁿ</button>
+                <button class="kb-key kb-wide" data-val="aⁿbⁿcⁿdⁿeⁿ">aⁿbⁿcⁿdⁿeⁿ</button>
+                <button class="kb-key kb-wide" data-val="ww">ww</button>
+                <button class="kb-key kb-wide" data-val="palindrome">palindrome</button>
+              </div>
+            </div>
+            <div class="kb-group">
+              <span class="kb-label">ACTIONS</span>
+              <div class="kb-keys">
+                <button class="kb-key kb-del" id="kb-backspace">⌫</button>
+                <button class="kb-key kb-space" data-val=" ">space</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="sim-classify-btn">CLASSIFY →</button>
+      </div>
+
+      <div id="sim-results" class="hidden">
+        <div id="sim-verdict-box"></div>
+        <div id="sim-steps-list"></div>
+      </div>
+
+    </div>
+  </section>
+
+    <!-- ======================================
+       TAB: PLAYGROUND
+  ====================================== -->
+  <section id="tab-playground" class="tab">
+
+    <div class="page-header">
+      <div class="page-tag">CLOSURE PROPERTIES</div>
+      <h1>Closure <em>Playground</em></h1>
+      <p class="page-sub">Pick a language from the dropdown or build one with the keyboard &mdash; then choose an operation and compute</p>
+    </div>
+
+    <div id="pg-container">
+
+      <!-- Three-column row: L1 | Operation | L2 -->
+      <div class="pg-row">
+
+        <!-- Language 1 -->
+        <div class="pg-card" id="pg-card-l1">
+          <div class="pg-card-label">LANGUAGE 1</div>
+
+          <div class="pg-lang-display-wrap">
+            <input type="text" class="pg-lang-display" id="pg-display-l1"
+              placeholder="type or pick from dropdown…"
+              autocomplete="off" spellcheck="false" />
+            <button class="pg-lang-clear" id="pg-clear-l1" title="clear">⌫</button>
+          </div>
+
+          <div class="pg-preset-row">
+            <label class="pg-kb-label">Or pick a preset:</label>
+            <select class="pg-preset-select" id="pg-preset-l1">
+              <option value="">— select —</option>
+              <optgroup label="Type 3 — Regular">
+                <option value="a*">a*</option>
+                <option value="a*b*">a*b*</option>
+                <option value="(ab)*">(ab)*</option>
+                <option value="strings ending in ab">strings ending in ab</option>
+              </optgroup>
+              <optgroup label="Type 2 — Context-Free">
+                <option value="aⁿbⁿ">aⁿbⁿ</option>
+                <option value="palindrome">palindrome over {a,b}</option>
+                <option value="balanced parentheses">balanced parentheses</option>
+              </optgroup>
+              <optgroup label="Type 1 — Context-Sensitive">
+                <option value="aⁿbⁿcⁿ">aⁿbⁿcⁿ</option>
+                <option value="aⁿbⁿcⁿdⁿ">aⁿbⁿcⁿdⁿ</option>
+                <option value="aⁿbⁿcⁿdⁿeⁿ">aⁿbⁿcⁿdⁿeⁿ</option>
+                <option value="ww">ww (copy language)</option>
+              </optgroup>
+              <optgroup label="Type 0 — Recursively Enumerable">
+                <option value="halting problem">halting problem</option>
+                <option value="post correspondence problem">post correspondence problem</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="pg-kb" data-target="l1">
+            <div class="pg-kb-row">
+              <span class="pg-kb-label">SYMBOLS</span>
+              <div class="pg-kb-keys">
+                <button class="pg-kb-key" data-val="a">a</button>
+                <button class="pg-kb-key" data-val="b">b</button>
+                <button class="pg-kb-key" data-val="c">c</button>
+                <button class="pg-kb-key" data-val="ⁿ">ⁿ</button>
+                <button class="pg-kb-key" data-val="ᵐ">ᵐ</button>
+                <button class="pg-kb-key" data-val="*">*</button>
+                <button class="pg-kb-key" data-val="+">+</button>
+                <button class="pg-kb-key" data-val="(">(</button>
+                <button class="pg-kb-key" data-val=")">)</button>
+                <button class="pg-kb-key" data-val="|">|</button>
+                <button class="pg-kb-key" data-val=" "> </button>
+                <button class="pg-kb-key pg-kb-del" data-action="del">⌫</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pg-inferred-badge" id="pg-badge-l1"></div>
+        </div>
+
+        <!-- Operation -->
+        <div class="pg-card" id="pg-card-op">
+          <div class="pg-card-label">OPERATION</div>
+          <div class="pg-ops">
+            <button class="pg-op active" data-op="union">∪ Union</button>
+            <button class="pg-op" data-op="intersection">∩ Intersection</button>
+            <button class="pg-op" data-op="complement">∁ Complement</button>
+            <button class="pg-op" data-op="concatenation">· Concatenation</button>
+          </div>
+          <div class="pg-op-hint" id="pg-op-hint">L2 ignored for complement</div>
+        </div>
+
+        <!-- Language 2 -->
+        <div class="pg-card" id="pg-card-l2">
+          <div class="pg-card-label">LANGUAGE 2</div>
+
+          <div class="pg-lang-display-wrap">
+            <input type="text" class="pg-lang-display" id="pg-display-l2"
+              placeholder="type or pick from dropdown…"
+              autocomplete="off" spellcheck="false" />
+            <button class="pg-lang-clear" id="pg-clear-l2" title="clear">⌫</button>
+          </div>
+
+          <div class="pg-preset-row">
+            <label class="pg-kb-label">Or pick a preset:</label>
+            <select class="pg-preset-select" id="pg-preset-l2">
+              <option value="">— select —</option>
+              <optgroup label="Type 3 — Regular">
+                <option value="a*">a*</option>
+                <option value="a*b*">a*b*</option>
+                <option value="(ab)*">(ab)*</option>
+                <option value="strings ending in ab">strings ending in ab</option>
+              </optgroup>
+              <optgroup label="Type 2 — Context-Free">
+                <option value="aⁿbⁿ">aⁿbⁿ</option>
+                <option value="palindrome">palindrome over {a,b}</option>
+                <option value="balanced parentheses">balanced parentheses</option>
+              </optgroup>
+              <optgroup label="Type 1 — Context-Sensitive">
+                <option value="aⁿbⁿcⁿ">aⁿbⁿcⁿ</option>
+                <option value="aⁿbⁿcⁿdⁿ">aⁿbⁿcⁿdⁿ</option>
+                <option value="aⁿbⁿcⁿdⁿeⁿ">aⁿbⁿcⁿdⁿeⁿ</option>
+                <option value="ww">ww (copy language)</option>
+              </optgroup>
+              <optgroup label="Type 0 — Recursively Enumerable">
+                <option value="halting problem">halting problem</option>
+                <option value="post correspondence problem">post correspondence problem</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="pg-kb" data-target="l2">
+            <div class="pg-kb-row">
+              <span class="pg-kb-label">SYMBOLS</span>
+              <div class="pg-kb-keys">
+                <button class="pg-kb-key" data-val="a">a</button>
+                <button class="pg-kb-key" data-val="b">b</button>
+                <button class="pg-kb-key" data-val="c">c</button>
+                <button class="pg-kb-key" data-val="ⁿ">ⁿ</button>
+                <button class="pg-kb-key" data-val="ᵐ">ᵐ</button>
+                <button class="pg-kb-key" data-val="*">*</button>
+                <button class="pg-kb-key" data-val="+">+</button>
+                <button class="pg-kb-key" data-val="(">(</button>
+                <button class="pg-kb-key" data-val=")">)</button>
+                <button class="pg-kb-key" data-val="|">|</button>
+                <button class="pg-kb-key" data-val=" "> </button>
+                <button class="pg-kb-key pg-kb-del" data-action="del">⌫</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pg-inferred-badge" id="pg-badge-l2"></div>
+        </div>
+
+      </div><!-- /.pg-row -->
+
+      <button id="pg-compute-btn">⚡ COMPUTE RESULT</button>
+
+      <div id="pg-result-area" class="hidden">
+        <div id="pg-result-header"></div>
+        <div id="pg-result-body"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       TAB: COMPARE
+  ══════════════════════════════════════ -->
+  <section id="tab-compare" class="tab">
+
+    <div class="page-header">
+      <div class="page-tag">SIDE BY SIDE</div>
+      <h1>Compare <em>Types</em></h1>
+      <p class="page-sub">Select any two Chomsky types to compare all their properties</p>
+    </div>
+
+    <div id="cmp-container">
+      <div class="cmp-pickers">
+        <div class="cmp-pick-wrap">
+          <label class="field-label">Type A</label>
+          <select id="cmp-a">
+            <option value="reg">Type 3 — Regular</option>
+            <option value="cf">Type 2 — Context-Free</option>
+            <option value="cs">Type 1 — Context-Sensitive</option>
+            <option value="re">Type 0 — RE</option>
+          </select>
+        </div>
+        <div class="cmp-vs">VS</div>
+        <div class="cmp-pick-wrap">
+          <label class="field-label">Type B</label>
+          <select id="cmp-b">
+            <option value="reg">Type 3 — Regular</option>
+            <option value="cf" selected>Type 2 — Context-Free</option>
+            <option value="cs">Type 1 — Context-Sensitive</option>
+            <option value="re">Type 0 — RE</option>
+          </select>
+        </div>
+      </div>
+      <div id="cmp-output"></div>
+    </div>
+  </section>
+
+
+
+
+  <!-- ══════════════════════════════════════
+       TAB: THE LANGUAGE COURTROOM
+  ══════════════════════════════════════ -->
+  <section id="tab-courtroom" class="tab">
+    <div class="page-header">
+      <div class="page-tag">MOCK TRIAL</div>
+      <h1>The Language <em>Courtroom</em></h1>
+      <p class="page-sub">Act as the jury. Hear arguments from the Prosecution and Defense as they debate the Chomsky classification of complex languages.</p>
+    </div>
+
+    <div id="crt-container">
+      
+      <!-- Docket View -->
+      <div id="crt-docket-view">
+        <div class="crt-header-row">
+          <h2>Trial Docket</h2>
+          <div class="crt-score-pill">Juror Credibility Score: <span id="crt-score">0</span></div>
+        </div>
+        <div id="crt-docket-list"></div>
+      </div>
+
+      <!-- Trial View -->
+      <div id="crt-trial-view" class="hidden">
+        <div class="crt-trial-header">
+          <button id="crt-back-docket">← Back to Docket</button>
+          <h2 id="crt-trial-title">On Trial: </h2>
+        </div>
+
+        <!-- Objection Overlay -->
+        <div id="crt-objection-flash" class="hidden">
+          <div class="crt-obj-bg"></div>
+          <div class="crt-obj-text">OBJECTION!</div>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="crt-chat"></div>
+
+        <!-- Action / Voting Area -->
+        <div id="crt-controls">
+          <div id="crt-action-bar">
+            <button id="crt-next-btn">Next Argument ➦</button>
+          </div>
+          
+          <div id="crt-voting-panel" class="hidden">
+            <div class="crt-vote-prompt">Arguments concluded. How do you find the defendant?</div>
+            <div class="crt-vote-buttons">
+              <button class="crt-vote-btn" id="crt-verdict-btn-reg">Type 3 (Regular)</button>
+              <button class="crt-vote-btn" id="crt-verdict-btn-cf">Type 2 (Context-Free)</button>
+              <button class="crt-vote-btn" id="crt-verdict-btn-cs">Type 1 (Context-Sensitive)</button>
+              <button class="crt-vote-btn" id="crt-verdict-btn-re">Type 0 (RE)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verdict Overlay -->
+        <div id="crt-verdict-overlay" class="hidden">
+          <div class="crt-verdict-box">
+            <div id="crt-gavel" class="crt-gavel-hit hidden">🔨</div>
+            <h1 id="crt-verdict-result"></h1>
+            <p id="crt-verdict-text"></p>
+            <button id="crt-replay-btn">Return to Docket</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       AUTOMATON EXPLORATION MODAL
+  ══════════════════════════════════════ -->
+  <div id="automaton-modal" class="hidden">
+    <div class="modal-backdrop" onclick="closeAutomatonModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAutomatonModal()">✕ CLOSE</button>
+      <div class="modal-header">
+        <div id="modal-badge"></div>
+        <h2 id="modal-title">Automaton Explorer</h2>
+      </div>
+      <div class="modal-body">
+        <div id="modal-diagram-container"></div>
+        <div class="modal-info">
+          <div class="modal-section-label">HOW IT WORKS</div>
+          <p id="modal-explanation"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="venn.js"></script>
+  <script src="classify.js"></script>
+  <script src="simulate.js"></script>
+  <script src="playground.js"></script>
+  <script src="compare.js"></script>
+  <script src="courtroom.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
